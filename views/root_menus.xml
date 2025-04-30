@@ -1,0 +1,9 @@
+<odoo>
+    <menuitem
+        id="menu_root"
+        name="HMS" />
+    <menuitem
+        id="menu_patient"
+        parent="menu_root"
+        name="patient" />
+</odoo>

@@ -1,0 +1,87 @@
+<odoo>
+    <record id="view_hms_patient_list" model="ir.ui.view">
+        <field name="name">hms.patient.list</field>
+        <field name="model">hms.patient</field>
+        <field name="arch" type="xml">
+            <list>
+
+                <field name="first_name"/>
+                <field name="last_name"/>
+                <field name="birth_date"/>
+                <field name="blood_type"/>
+                <field name="age"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hms_patient_form" model="ir.ui.view">
+        <field name="name">hms.patient.form</field>
+        <field name="model">hms.patient</field>
+        <field name="arch" type="xml">
+            <form string="Patient Form">
+                <header>
+                    <!-- Server action for printing the patient report -->
+                    <button name="%(action_report_patient)d" type="action" string="Print Patient Report"
+                            class="btn-secondary" icon="fa-print"/>
+                </header>
+
+                <sheet>
+                    <notebook>
+                        <page string="General Info">
+                            <group>
+                                <group>
+
+                                    <field name="first_name"/>
+                                    <field name="last_name"/>
+                                    <field name="birth_date"/>
+                                    <field name="age"/>
+                                </group>
+                                <group>
+                                    <field name="blood_type"/>
+                                    <field name="pcr"/>
+                                    <field name="cr_ratio"/>
+                                    <!--                                    <button name="action_mark_good" type="object" string="Mark Good" class="btn-primary" />-->
+
+                                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                                </group>
+                                <group>
+                                    <field name="history"/>
+                                    <field name="address"/>
+                                    <field name="email"/>
+                                </group>
+                                <group>
+                                    <field name="image"/>
+                                    <field name="dep_id"/>
+                                    <field name="doctor_ids" widget="many2many_tags" required_if="age &lt; 50"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- New Log History Tab -->
+                        <page string="Log History">
+                            <field name="log_ids" readonly="1">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="created_by"/>
+                                    <field name="description"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hms_patient" model="ir.actions.act_window">
+        <field name="name">Patients</field>
+        <field name="res_model">hms.patient</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+    <!-- Menu -->
+    <menuitem id="menu_hms_patient" name="Patients" parent="menu_root" action="action_hms_patient"/>
+</odoo>

@@ -1,0 +1,204 @@
+<odoo>
+    <!-- Patient Report Action -->
+    <record id="action_report_patient" model="ir.actions.report">
+        <field name="name">Patient Report</field>
+        <field name="model">hms.patient</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hms.report_patient_template</field>
+        <field name="report_file">hms.report_patient_template</field>
+        <field name="print_report_name">'Patient - %s' % (object.first_name)</field>
+        <field name="binding_model_id" ref="model_hms_patient"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_patient_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="patient">
+                <t t-call="web.basic_layout">
+                    <style>
+                        table {
+                        font: normal normal normal 15px/15px Arial, sans-serif;
+                        width: 100%;
+                        border: 2px solid black;
+                        border-collapse: collapse;
+                        padding: 5px;
+                        }
+                        table th {
+                        font: normal normal bold 15px Arial, sans-serif;
+                        border: 1px solid #b3adad;
+                        padding: 5px;
+                        background: #f0f0f0;
+                        color: #313030;
+
+                        }
+                        table td {
+                        font: normal normal normal 15px Arial, sans-serif;
+                        border: 1px solid #b3adad;
+                        padding: 5px;
+                        color: #313030;
+                        text-align: center;
+                        }
+                        strong{
+                        font-size:24px;
+                        font-weight:700;
+                        }
+                        span{
+                        font-size:22px;
+                        font-weight:500;
+                        }
+
+                    </style>
+                    <div class="page">
+                        <div class="row mb-4">
+                            <div class="col-8">
+                                <h1 style="color: #e74c3c; font-size: 32px;">Patient Status Report</h1>
+                            </div>
+                            <div class="col-4 text-right">
+                                <img t-if="patient.image" style="max-height: 150px; max-width: 150px;"
+                                     t-att-src="image_data_uri(patient.image)" alt="Patient Image"/>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <div class="mb-2">
+                                    <strong>Name:</strong> <span t-esc="patient.first_name + ' ' + patient.last_name"/>
+                                </div>
+                                <div class="mb-2">
+                                    <strong>Age:</strong> <span t-esc="patient.age"/>
+                                </div>
+                                <div class="mb-2">
+                                    <strong>Department:</strong> <span t-esc="patient.dep_id.name"/>
+                                </div>
+                                <div class="mb-2">
+                                    <strong>Doctors:</strong>
+                                    <t t-set="doctor_names" t-value="', '.join(patient.doctor_ids.mapped('first_name'))"/>
+                                    <span t-esc="doctor_names or '-'"/>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="mb-2">
+                                    <strong>Birth date:</strong> <span t-esc="patient.birth_date"/>
+                                </div>
+                                <div class="mb-2">
+                                    <strong>PCR:</strong> <span t-esc="patient.pcr"/>
+                                </div>
+                                <div class="mb-2">
+                                    <strong>Blood Type:</strong> <span t-esc="patient.blood_type"/>
+                                </div>
+                                <div class="mb-2">
+                                    <strong>Email:</strong> <span t-esc="patient.email"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 style="color: #e74c3c; text-align: center;">Log History</h3>
+                        <table class="table table-bordered table-sm">
+                            <thead style="background-color: #3498db; color: white;">
+                                <tr>
+                                    <th style="width: 33%; text-align: center;">Doctor</th>
+                                    <th style="width: 33%; text-align: center;">Date</th>
+                                    <th style="width: 34%; text-align: center;">Info</th>
+                                </tr>
+                            </thead>
+                            <tbody style="background-color: #00ffff;">
+                                <t t-foreach="patient.log_ids" t-as="log">
+                                    <tr t-att-style="log_index % 2 == 0 and 'background-color: #f2f2f2;' or ''">
+                                        <td><span t-esc="log.patient_id.doctor_ids[0].first_name"/></td>
+                                        <td><span t-esc="log.date"/></td>
+                                        <td><span t-esc="log.description"/></td>
+                                    </tr>
+                                </t>
+                                <t t-if="not patient.log_ids">
+                                    <tr>
+                                        <td colspan="3" class="text-center">No log entries found</td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+        <!-- Report Template -->
+<!--    <template id="report_patient_template">-->
+<!--        <t t-call="web.html_container">-->
+<!--            <t t-foreach="docs" t-as="patient">-->
+<!--                <t t-call="web.external_layout">-->
+<!--                    <div class="page">-->
+<!--                        <div class="row mb-4">-->
+<!--                            <div class="col-8">-->
+<!--                                <h1 style="color: #e74c3c; font-size: 28px;">Patient Status Report</h1>-->
+<!--                            </div>-->
+<!--                            <div class="col-4 text-right">-->
+<!--                                <img t-if="patient.image" style="max-height: 100px; max-width: 100px;"-->
+<!--                                     t-att-src="image_data_uri(patient.image)" alt="Patient Image"/>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        <div class="row mb-4">-->
+<!--                            <div class="col-6">-->
+<!--                                <div class="mb-2">-->
+<!--                                    <strong>Name:</strong> <span t-esc="patient.first_name + ' ' + patient.last_name"/>-->
+<!--                                </div>-->
+<!--                                <div class="mb-2">-->
+<!--                                    <strong>Age:</strong> <span t-esc="patient.age"/>-->
+<!--                                </div>-->
+<!--                                <div class="mb-2">-->
+<!--                                    <strong>Department:</strong> <span t-esc="patient.dep_id.name"/>-->
+<!--                                </div>-->
+<!--                                <div class="mb-2">-->
+<!--                                    <strong>Doctors:</strong>-->
+<!--                                    <t t-set="doctor_names" t-value="', '.join(patient.doctor_ids.mapped('name'))"/>-->
+<!--                                    <span t-esc="doctor_names or '-'"/>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+<!--                            <div class="col-6">-->
+<!--                                <div class="mb-2">-->
+<!--                                    <strong>Birth date:</strong> <span t-esc="patient.birth_date"/>-->
+<!--                                </div>-->
+<!--                                <div class="mb-2">-->
+<!--                                    <strong>PCR:</strong> <span t-esc="patient.pcr"/>-->
+<!--                                </div>-->
+<!--                                <div class="mb-2">-->
+<!--                                    <strong>Blood Type:</strong> <span t-esc="patient.blood_type"/>-->
+<!--                                </div>-->
+<!--                                <div class="mb-2">-->
+<!--                                    <strong>Email:</strong> <span t-esc="patient.email"/>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        <h3 style="color: #e74c3c; text-align: center;">Log History</h3>-->
+<!--                        <table class="table table-bordered table-sm">-->
+<!--                            <thead style="background-color: #3498db; color: white;">-->
+<!--                                <tr>-->
+<!--                                    <th style="width: 33%;">User</th>-->
+<!--                                    <th style="width: 33%;">Date</th>-->
+<!--                                    <th style="width: 34%;">Info</th>-->
+<!--                                </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                                <t t-foreach="patient.log_ids" t-as="log">-->
+<!--                                    <tr t-att-style="log_index % 2 == 0 and 'background-color: #f2f2f2;' or ''">-->
+<!--                                        <td><span t-esc="log.created_by.name"/></td>-->
+<!--                                        <td><span t-esc="log.date"/></td>-->
+<!--                                        <td><span t-esc="log.description"/></td>-->
+<!--                                    </tr>-->
+<!--                                </t>-->
+<!--                                <t t-if="not patient.log_ids">-->
+<!--                                    <tr>-->
+<!--                                        <td colspan="3" class="text-center">No log entries found</td>-->
+<!--                                    </tr>-->
+<!--                                </t>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                </t>-->
+<!--            </t>-->
+<!--        </t>-->
+<!--    </template>-->
+</odoo>

@@ -1,0 +1,47 @@
+<odoo>
+    <!-- User Group -->
+    <record id="group_hms_user" model="res.groups">
+        <field name="name">HMS User</field>
+    </record>
+
+    <!-- Manager Group -->
+    <record id="group_hms_manager" model="res.groups">
+        <field name="name">HMS Manager</field>
+    </record>
+
+    <!-- Define Model -->
+    <record id="model_hms_patient" model="ir.model">
+        <field name="name">hms.patient</field>
+        <field name="model">hms.patient</field>
+    </record>
+
+    <!-- Access Control -->
+    <record id="access_hms_patient_user" model="ir.model.access">
+        <field name="name">hms.patient user</field>
+        <field name="model_id" ref="model_hms_patient"/>
+        <field name="group_id" ref="group_hms_user"/>
+        <field name="perm_read">1</field>
+        <field name="perm_write">1</field>
+        <field name="perm_create">1</field>
+        <field name="perm_unlink">0</field>
+    </record>
+
+    <record id="access_hms_patient_manager" model="ir.model.access">
+        <field name="name">hms.patient manager</field>
+        <field name="model_id" ref="model_hms_patient"/>
+        <field name="group_id" ref="group_hms_manager"/>
+        <field name="perm_read">1</field>
+        <field name="perm_write">1</field>
+        <field name="perm_create">1</field>
+        <field name="perm_unlink">1</field>
+    </record>
+</odoo>
+
+
+
+<!--###########################sec-->
+<!--# id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink-->
+<!--# access_hms_patient,hms.patient,model_hms_patient,,1,1,1,1-->
+<!--# access_hms_doctor,hms.doctor,model_hms_doctor,,1,1,1,1-->
+<!--# access_hms_department,hms.department,model_hms_department,,1,1,1,1-->
+<!--# access_hms_patient_log,hms.patient.log,model_hms_patient_log,,1,1,1,1-->
